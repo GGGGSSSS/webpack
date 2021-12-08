@@ -3,9 +3,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const path = require("path");
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { options } = require('less');
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/common_index.js",
   // entry: ['./src/index', './src/other']
   // entry: {
   //   index: './src/index',
@@ -21,6 +22,7 @@ module.exports = {
     //
   },
   mode: "development",
+  devtool: 'source-map',
 
   //处理不认识的模块 使用loader
   module: {
@@ -70,6 +72,16 @@ module.exports = {
         include: path.resolve(__dirname, './src'),
         loader: 'babel-loader',
       },
+      // {
+      //   test: /\.js$/,
+      //   include: path.resolve(__dirname, './src'),
+      //   use: {
+      //     loader: path.resolve(__dirname, './myLoader/index.js'),
+      //     options: {
+      //       name: 'Xx'
+      //     }
+      //   }
+      // },
     ],
   },
 
@@ -82,14 +94,18 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'css/[name].css'
     }),
+    new webpack.DllReferencePlugin({
+      manifest: path.resolve(__dirname, "./dll/react-manifest.json")
+    }),
     new webpack.HotModuleReplacementPlugin()
     //HMR:热更新 是devServer中的设置 用来实现css热更新
     //在开启式后 css部分改变 已经渲染的DOM不会更改 说明并没有启动整个项目的刷新 而是DOM树不变 更新css树然后render
   ],
   optimization: {
     usedExports: true,
-    //对import进来的摇树 比如js,css,less 如果你不使用就会被摇 开关在package.json的sideEffects如果在确认没有副作用就会摇 不然只会在注释里标注未使用
+    //对import进来的摇树 比如js,css,less 如果你不使用就会被摇 但你使用一个接口其他接口会保存 js确实很难实现按需引入 开关在package.json的sideEffects如果在确认没有副作用就会摇 不然只会在注释里标注未使用
     //虽然是import export的形式导入 但实际是打包到一个bundle去执行 所以对于polyfill这种全局执行的摇树需要知道副作用
+    //按需引入和摇树目的,效果不同
     splitChunks: {
       chunks: "all", // 所有的 chunks 代码公共的部分分离出来成为⼀个单独的⽂件
       cacheGroups: {
@@ -109,7 +125,6 @@ module.exports = {
     },
     extensions: [".js", ".json"],
   },
-  devtool: 'source-map',
 
   devServer: {
     contentBase: '/build',
@@ -117,9 +132,16 @@ module.exports = {
     hot: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000'
+        target: 'http://localhost:9990'
       }
     },
     port: 8080,
+    before(app, server) {
+      app.get('/api/info2', (req, res) => {
+        res.json({
+          hello: 'express',
+        })
+      })
+    }
   }
 };

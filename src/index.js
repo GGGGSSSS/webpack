@@ -1,14 +1,16 @@
-import React, { Component } from "react";
-import ReactDom from "react-dom";
-class App extends Component {
-  render() {
-    return <div>hello world</div>;
-  }
-}
-ReactDom.render(<App />, document.getElementById("root"));
-console.dir(jQuery)
+import name from './other'
 
-// import '@babel/polyfill' //polyfill是es6+的ECMA规范库 es6相比es5多的不仅是语法还有API es6转es5的其中一个步骤: 给es5加上es6的API 
+// import React, { Component } from "react";
+// import ReactDom from "react-dom";
+// class App extends Component {
+//   render() {
+//     return <div>hello world</div>;
+//   }
+// }
+// ReactDom.render(<App />, document.getElementById("root"));
+// console.dir(jQuery)
+
+// import '@babel/polyfill' //现在不用了 polyfill是es6+的ECMA规范库 es6相比es5多的不仅是语法还有API es6转es5的其中一个步骤: 给es5加上es6的API 
 // import "core-js";
 // import "regenerator-runtime/runtime"
 // const arr = [new Promise(() => { }), new Promise(() => { })];
@@ -16,8 +18,8 @@ console.dir(jQuery)
 //   console.log(item);
 // });
 
-import { cube } from './math.js';
-cube()
+// import { cube } from './math.js';
+// cube()
 // import counter from './counter'
 // import number from './number'
 // counter()
